@@ -1,0 +1,17 @@
+os: osx
+dist: trusty
+language: generic
+
+sudo: false
+
+before_install:
+ - brew update
+ - brew uninstall --ignore-dependencies boost
+ - brew install python3
+ - pip install numpy
+ - pip3 install numpy
+
+install:
+ - brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/3df9cdfc25f796ec8d3ffd0a0a12476cf6d413d5/Formula/boost.rb
+ - brew install https://gist.githubusercontent.com/hsiaoyi0504/cd136fb266f917a85261b946df2f4c6f/raw/89fa69777f7d3766886dcfe3abf9fa539a25e047/boost-python.rb --with-python3
+ - travis_wait brew install https://gist.githubusercontent.com/hsiaoyi0504/cd136fb266f917a85261b946df2f4c6f/raw/081ab1509071d0f509ab996c4a67935fdfc79d2e/rdkit.rb --with-python3 --without-numpy

@@ -18,25 +18,30 @@ class Rdkit < Formula
 
   depends_on 'cmake' => :build
   depends_on 'swig' => :build if build.with? 'java'
-  depends_on 'boost'
   depends_on "eigen" => :recommended
+  depends_on "https://raw.githubusercontent.com/Homebrew/homebrew-core/3df9cdfc25f796ec8d3ffd0a0a12476cf6d413d5/Formula/boost.rb" => "with-python"
   depends_on :python3 => :optional
   depends_on :postgresql => :optional
 
   # Different dependencies if building for python3
   if build.with? "python3"
-    depends_on "boost-python" => "with-python3"
+    depends_on "https://raw.githubusercontent.com/Homebrew/homebrew-core/d22f78c56a1c7d8e711a407c2dae5fc42f4ae6c2/Formula/boost-python.rb" => "with-python3"
     depends_on "numpy" => [:recommended, "with-python3"]
     depends_on "py3cairo" if build.with? "pycairo"
   else
     depends_on :python
-    depends_on "boost-python"
+    depends_on "https://raw.githubusercontent.com/Homebrew/homebrew-core/d22f78c56a1c7d8e711a407c2dae5fc42f4ae6c2/Formula/boost-python.rb"
     depends_on "numpy" => :recommended
     depends_on "py2cairo" if build.with? "pycairo"
   end
-
+  
   def install
     args = std_cmake_args
+    # args << "-DBoost_NO_SYSTEM_PATHS=TRUE"
+    args << "-DBoost_DEBUG=ON"
+    # args << "-DBOOST_ROOT=/usr/local/opt/boost@1.60"
+    # args << "-DBoost_INCLUDE_DIRS=/usr/local/opt/boost@1.64_0/include"
+    # args << "-DBOOST_LIBRARYDIR=/usr/local/opt/boost@1.64_0/lib"
     args << "-DRDK_INSTALL_INTREE=OFF"
     args << "-DRDK_BUILD_SWIG_WRAPPERS=ON" if build.with? "java"
     args << "-DRDK_BUILD_AVALON_SUPPORT=ON" if build.with? "avalon"
@@ -64,6 +69,7 @@ class Rdkit < Formula
     numpy_include = %x(#{python_executable} -c 'import numpy;print(numpy.get_include())').chomp
     args << "-DPYTHON_NUMPY_INCLUDE_PATH='#{numpy_include}'"
 
+    system "ls", "/usr/local/opt/boost@1.60/lib"
     args << '.'
     system "cmake", *args
     system "make"
@@ -104,6 +110,5 @@ class Rdkit < Formula
           sudo ln -s #{lib}/libGraphMolWrap.jnilib /Library/Java/Extensions/libGraphMolWrap.jnilib
       EOS
     end
-    s
   end
 end
