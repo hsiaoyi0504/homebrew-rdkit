@@ -18,19 +18,19 @@ class Rdkit < Formula
 
   depends_on "cmake" => :build
   depends_on "swig" => :build if build.with? 'java'
-  depends_on "boost"
+  depends_on "boost@1.60"
   depends_on "eigen" => :recommended
   depends_on "python3" => :optional
   depends_on "postgresql" => :optional
 
   # Different dependencies if building for python3
   if build.with? "python3"
-    depends_on "boost-python3"
+    depends_on "boost-python3@1.60"
     depends_on "numpy" => [:recommended, "with-python3"]
     depends_on "py3cairo" if build.with? "pycairo"
   else
     depends_on "python"
-    depends_on "boost-python"
+    depends_on "boost-python@1.60"
     depends_on "numpy" => :recommended
     depends_on "py2cairo" if build.with? "pycairo"
   end
@@ -40,6 +40,7 @@ class Rdkit < Formula
     ENV['CFLAGS'] = '-Wno-parentheses -Wno-logical-op-parentheses -Wno-format'
 
     args = std_cmake_args
+	args << "-DBOOST_ROOT=/usr/local/Cellar/boost@1.60/1.60.0"
     args << "-DRDK_INSTALL_INTREE=OFF"
     args << "-DRDK_BUILD_SWIG_WRAPPERS=ON" if build.with? "java"
     args << "-DRDK_BUILD_AVALON_SUPPORT=ON" if build.with? "avalon"
