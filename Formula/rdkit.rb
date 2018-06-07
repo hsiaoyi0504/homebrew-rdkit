@@ -18,19 +18,19 @@ class Rdkit < Formula
 
   depends_on "cmake" => :build
   depends_on "swig" => :build if build.with? 'java'
-  depends_on "boost"
+  depends_on "boost@1.66"
   depends_on "eigen" => :recommended
   depends_on "python3" => :optional
   depends_on "postgresql" => :optional
 
   # Different dependencies if building for python3
   if build.with? "python3"
-    depends_on "boost-python3"
+    depends_on "boost-python3@1.66"
     depends_on "numpy" => [:recommended, "with-python3"]
     depends_on "py3cairo" if build.with? "pycairo"
   else
     depends_on "python"
-    depends_on "boost-python"
+    depends_on "boost-python@1.66"
     depends_on "numpy" => :recommended
     depends_on "py2cairo" if build.with? "pycairo"
   end
@@ -47,6 +47,10 @@ class Rdkit < Formula
     args << "-DRDK_BUILD_INCHI_SUPPORT=ON" if build.with? "inchi"
     args << '-DRDK_BUILD_CPP_TESTS=OFF'
     args << '-DRDK_INSTALL_STATIC_LIBS=OFF' unless build.with? 'postgresql'
+    args << "-DBOOST_INCLUDEDIR='/usr/local/Cellar/boost@1.66/1.66.0/include'"
+    args << "-DBOOST_LIBRARYDIR='/usr/local/Cellar/boost@1.66/1.66.0/lib'"
+    args << "-DBoost_NO_SYSTEM_PATHS=ON"
+    args << "-DBoost_DEBUG=1"
 
     # Get Python location
     python_executable = if build.with? "python3" then `which python3`.strip else `which python`.strip end
